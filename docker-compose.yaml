@@ -1,0 +1,16 @@
+version: '1'
+services:
+  postgres:
+    image: postgres:13
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    networks:
+      - GoTodos
+
+networks:
+  GoTodos:
+  # docker run --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -d postgres
