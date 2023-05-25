@@ -1,9 +1,11 @@
 package main
 
 import (
-	"fmt"
+	"net/http"
+	"todos/handlers"
 
 	"github.com/XSAM/otelsql"
+	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 )
 
@@ -13,16 +15,12 @@ func main() {
 		panic(err)
 	}
 
-	err = dbconn.Ping()
-	if err != nil {
-		panic(err)
+	router := mux.NewRouter()
+	router.HandleFunc("/users", handlers.CreateUser(dbconn)).Methods("POST")
+	router.HandleFunc("/users/{id}", handlers.GetUser(dbconn)).Methods("GET")
+	api := http.Server{
+		Addr:         "0.0.0.0:" + "8888",
+		Handler:      router,
 	}
-	
-	dbconn.Query("INSERT INTO users (name) VALUES ('test')")
-	rows, err := dbconn.Query("SELECT * FROM users")
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Printf("%+v\n", rows)
+	api.ListenAndServe()
 }
